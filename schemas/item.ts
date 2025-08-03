@@ -3,7 +3,7 @@ export default interface Item {
 	name: string;
 	description: string;
 	quantity: number;
-	price: number;
+	purchasePrice: number;
 	category: string;
 	supplierId: number;
 	createdAt: ISODateString;
