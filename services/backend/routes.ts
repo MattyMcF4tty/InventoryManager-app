@@ -13,8 +13,8 @@ type StaticRoutes = {
 type DynamicRoutes = {
 	[path in `/items/${string}`]: {
 		GET: Item;
-		PATCH?: Partial<Omit<Item, 'createdAt' | 'updatedAt' | 'id'>>;
-		DELETE?: void;
+		PATCH: Item;
+		DELETE: void;
 	};
 };
 

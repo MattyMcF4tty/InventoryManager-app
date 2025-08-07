@@ -1,15 +1,16 @@
 import Navbar from '@/components/navigation/Navbar';
 import {Stack} from 'expo-router';
 import {StatusBar} from 'expo-status-bar';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet} from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 export default function RootLayout() {
 	return (
-		<View style={styles.container}>
+		<GestureHandlerRootView style={styles.container}>
 			<StatusBar hidden />
-			<Stack screenOptions={{headerShown: false}} />
+			<Stack screenOptions={{headerShown: false, animation: 'none'}} />
 			<Navbar />
-		</View>
+		</GestureHandlerRootView>
 	);
 }
 
