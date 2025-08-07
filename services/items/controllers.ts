@@ -35,3 +35,11 @@ export async function updateItem(
 
 	return response.data;
 }
+
+export async function getItem(id: Item['id']): Promise<Item> {
+	const response = await handleInternalApi(`/items/${id}`, {
+		method: 'GET',
+	});
+
+	return response.data;
+}

@@ -1,6 +1,6 @@
 import ItemBox from '@/components/ItemBox';
 import Item from '@/schemas/item';
-import {getItems} from '@/services/items/controller';
+import {getItems} from '@/services/items/controllers';
 import {useEffect, useState} from 'react';
 import {FlatList, Text, View} from 'react-native';
 

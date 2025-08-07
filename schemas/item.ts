@@ -1,3 +1,5 @@
+import {ISODateString} from '@/schemas/types';
+
 export default interface Item {
 	id: number;
 	name: string;
@@ -9,5 +11,3 @@ export default interface Item {
 	createdAt: ISODateString;
 	updatedAt: ISODateString;
 }
-
-type ISODateString = string;

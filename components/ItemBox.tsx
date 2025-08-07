@@ -1,10 +1,11 @@
+import ContentBox from '@/components/ui/ContentBox';
 import Item from '@/schemas/item';
-import {updateItem} from '@/services/items/controller';
+import {updateItem} from '@/services/items/controllers';
 import {FontAwesome5} from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import {Link} from 'expo-router';
 import {useRef, useState} from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, Pressable, StyleSheet, Text, View} from 'react-native';
 import Swipeable, {SwipeableMethods} from 'react-native-gesture-handler/ReanimatedSwipeable';
 
 interface ItemBoxProps {
@@ -23,7 +24,6 @@ const ItemBox = ({item: defaultItem}: ItemBoxProps) => {
 		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
 
 		setLoading(true);
-
 		// Wait showing loading spinner
 		setTimeout(() => {
 			if (loading) setShowSpinner(true);
@@ -33,6 +33,11 @@ const ItemBox = ({item: defaultItem}: ItemBoxProps) => {
 			const newQuantity = item.quantity + 1;
 			setItem(await updateItem(item.id, {quantity: newQuantity}));
 		} else if (direction === 'right') {
+			if (item.quantity <= 0) {
+				setLoading(false);
+				setShowSpinner(false);
+				return;
+			}
 			const newQuantity = item.quantity - 1;
 			setItem(await updateItem(item.id, {quantity: newQuantity}));
 		}
@@ -43,6 +48,9 @@ const ItemBox = ({item: defaultItem}: ItemBoxProps) => {
 
 	return (
 		<Swipeable
+			containerStyle={{
+				overflow: 'visible',
+			}}
 			ref={swipeableRef}
 			overshootFriction={10}
 			friction={2}
@@ -51,49 +59,38 @@ const ItemBox = ({item: defaultItem}: ItemBoxProps) => {
 			onSwipeableWillOpen={(direction) => {
 				handleSwipe(direction);
 			}}
-			renderLeftActions={() => (
-				<View style={styles.leftSwipe}>
-					<FontAwesome5 name={'minus'} size={20} color="white" />
-				</View>
-			)}
+			renderLeftActions={() =>
+				item.quantity > 0 && (
+					<View style={styles.leftSwipe}>
+						<FontAwesome5 name={'minus'} size={20} color="white" />
+					</View>
+				)
+			}
 			renderRightActions={() => (
 				<View style={styles.rightSwipe}>
 					<FontAwesome5 name={'plus'} size={20} color="white" />
 				</View>
 			)}
 		>
-			<Link href={`/inventory/item/${item.id}`} asChild>
-				<Pressable style={styles.container}>
-					<Text style={styles.title}>{item.name}</Text>
-					<Text>Description: {item.description}</Text>
-					<Text>
-						Quantity: {item.quantity}{' '}
-						{showSpinner && (
-							<View style={styles.loadingIcon}>
-								<FontAwesome5 name="spinner" size={10} color="gray" />
-							</View>
-						)}
-					</Text>
-					<Text>Price: {item.purchasePrice} DKK</Text>
-					<Text>Category: {item.category}</Text>
-				</Pressable>
-			</Link>
+			{showSpinner && (
+				<View style={styles.loadingIcon}>
+					<ActivityIndicator />
+				</View>
+			)}
+			<ContentBox>
+				<Link href={`/inventory/item/${item.id}`} asChild>
+					<Pressable>
+						<Text style={styles.title}>{item.name}</Text>
+						<Text>Quantity: {item.quantity}</Text>
+						<Text>Category: {item.category}</Text>
+					</Pressable>
+				</Link>
+			</ContentBox>
 		</Swipeable>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flexDirection: 'column',
-		width: '100%',
-		padding: 16,
-		borderTopLeftRadius: 8,
-		borderTopRightRadius: 8,
-		borderBottomLeftRadius: 8,
-		borderBottomRightRadius: 8,
-		backgroundColor: 'white',
-		elevation: 3,
-	},
 	title: {
 		fontWeight: 'bold',
 		fontSize: 18,
