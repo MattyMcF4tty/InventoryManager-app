@@ -10,4 +10,5 @@ export default interface Item {
 	supplierId: number;
 	createdAt: ISODateString;
 	updatedAt: ISODateString;
+	imageUrl: string;
 }

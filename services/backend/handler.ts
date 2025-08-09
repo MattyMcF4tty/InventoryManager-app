@@ -14,7 +14,8 @@ export default async function handleInternalApi<
 ): Promise<ApiResponse<ApiRouteMap[R][M]>> {
 	const serverUrl = 'http://192.168.1.28:8080';
 	const rootPath = `${serverUrl}/v1`;
-	// Extract searchParams and options
+
+	// We extract searchParams and options
 	const {params, ...fetchOptions} = options;
 
 	const query = params ? `?${params.toString()}` : '';

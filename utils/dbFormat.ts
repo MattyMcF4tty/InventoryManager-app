@@ -60,7 +60,22 @@ export function deserializeFromDbFormat<T extends object>(obj: Record<string, un
 
 	for (const [key, value] of Object.entries(obj)) {
 		const camelKey = toCamelCase(key) as keyof T;
-		result[camelKey] = value as T[typeof camelKey];
+
+		if (value && typeof value === 'object' && !Array.isArray(value) && !(value instanceof Date)) {
+			// Recursively deserialize nested objects
+			result[camelKey] = deserializeFromDbFormat(
+				value as Record<string, unknown>
+			) as T[typeof camelKey];
+		} else if (Array.isArray(value)) {
+			// Recursively handle arrays of objects
+			result[camelKey] = value.map((item) =>
+				item && typeof item === 'object' && !(item instanceof Date)
+					? deserializeFromDbFormat(item as Record<string, unknown>)
+					: item
+			) as T[typeof camelKey];
+		} else {
+			result[camelKey] = value as T[typeof camelKey];
+		}
 	}
 
 	return result as T;
