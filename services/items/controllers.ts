@@ -13,7 +13,6 @@ export async function getItems(pageSize: number = 20, page: number = 1): Promise
 	params.append('page-size', String(pageSize));
 	params.append('page', String(page));
 
-	console.log('fetching items');
 	const response = await handleInternalApi('/items', {
 		method: 'GET',
 		params: params,
@@ -39,6 +38,24 @@ export async function updateItem(
 export async function getItem(id: Item['id']): Promise<Item> {
 	const response = await handleInternalApi(`/items/${id}`, {
 		method: 'GET',
+	});
+
+	return response.data;
+}
+
+export async function pagedItemSearch(
+	name: Item['name'],
+	pageSize: number = 20,
+	page: number = 1
+): Promise<Paged<Item>> {
+	const params = new URLSearchParams();
+	params.append('name', name);
+	params.append('page-size', String(pageSize));
+	params.append('page', String(page));
+
+	const response = await handleInternalApi('/items/search', {
+		method: 'GET',
+		params: params,
 	});
 
 	return response.data;

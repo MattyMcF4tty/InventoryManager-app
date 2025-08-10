@@ -8,11 +8,14 @@ type StaticRoutes = {
 		GET: Paged<Item>;
 		POST: Item;
 	};
+	'/items/search': {
+		GET: Paged<Item>;
+	};
 };
 
-// Route map for dynamic paths
+// Route map for dynamic item paths, excluding the literal '/items/search'
 type ItemRoutes = {
-	[path in `/items/${string}`]: {
+	[P in `/items/${string}` as P extends '/items/search' ? never : P]: {
 		GET: Item;
 		PATCH: Item;
 		DELETE: void;
