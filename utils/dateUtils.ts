@@ -1,6 +1,6 @@
 import {ISODateString} from '@/schemas/types';
 
-export function isValidDate(unknownDate: string | ISODateString | Date): boolean {
+export function isValidDate(unknownDate: string | ISODateString | Date | unknown): boolean {
 	// Only accept strings
 	if (typeof unknownDate !== 'string') {
 		return false;

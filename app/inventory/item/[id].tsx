@@ -1,19 +1,19 @@
+import InfoBox from '@/app/inventory/item/components/InfoBox';
 import ItemCard from '@/app/inventory/item/components/ItemCard';
-import ItemDetailsBox from '@/app/inventory/item/components/ItemDetailsBox';
 import SaveButton from '@/app/inventory/item/components/SaveButton';
+import ContentBox from '@/components/ui/ContentBox';
 import Item from '@/schemas/item';
+import Supplier from '@/schemas/supplier';
 import {getItem} from '@/services/items/controllers';
+import {getSupplier} from '@/services/suppliers/controllers';
 import {getObjectDifferences} from '@/utils/objectUtils';
 import {useLocalSearchParams} from 'expo-router';
 import isEqual from 'fast-deep-equal';
 import {useEffect, useState} from 'react';
 import {ActivityIndicator, Keyboard, StyleSheet, Text, View} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export default function ItemScreen() {
-	const insets = useSafeAreaInsets();
-
 	const {id: idString} = useLocalSearchParams();
 	const id = Number(idString);
 
@@ -21,18 +21,23 @@ export default function ItemScreen() {
 	const [localItem, setLocalItem] = useState<Item>();
 	const [loading, setLoading] = useState<boolean>(false);
 
+	const [supplier, setSupplier] = useState<Supplier>();
+
 	const [allowSave, setAllowSave] = useState(false);
 
 	useEffect(() => {
-		async function fetchItem() {
+		async function initDataFetch() {
 			setLoading(true);
 			const fetchedItem = await getItem(id);
 			setStoredItem(fetchedItem);
 			setLocalItem(fetchedItem);
+
+			const fetchedSupplier = await getSupplier(fetchedItem.id);
+			setSupplier(fetchedSupplier);
 			setLoading(false);
 		}
 		if (id) {
-			fetchItem();
+			initDataFetch();
 		}
 	}, [id]);
 
@@ -79,10 +84,36 @@ export default function ItemScreen() {
 				<View style={styles.container}>
 					<ItemCard localItem={localItem} />
 
-					{/* Item info box */}
+					{/* Item details box */}
 					<View>
 						<Text style={styles.small}>Item Details</Text>
-						<ItemDetailsBox localItem={localItem} setLocalItem={setLocalItem} />
+						<InfoBox<Item>
+							displayObject={localItem}
+							hiddenFields={['id', 'supplierId', 'name', 'description']}
+							protectedFields={['createdAt', 'updatedAt']}
+							onChange={(updatedItem) => {
+								setLocalItem(updatedItem);
+							}}
+						/>
+					</View>
+
+					{/* Supplier details box */}
+					<View>
+						<Text style={styles.small}>Supplier Details</Text>
+						{supplier ? (
+							<InfoBox<Supplier>
+								displayObject={supplier}
+								hiddenFields={['id']}
+								protectedFields="all"
+								onChange={(updatedSupplier) => {
+									setSupplier(updatedSupplier);
+								}}
+							/>
+						) : (
+							<ContentBox>
+								<Text>Unknown</Text>
+							</ContentBox>
+						)}
 					</View>
 				</View>
 			</ScrollView>
@@ -115,6 +146,7 @@ const styles = StyleSheet.create({
 		fontWeight: 'bold',
 		fontSize: 10,
 		color: 'gray',
+		marginBottom: 2,
 	},
 
 	fabContainer: {

@@ -1,5 +1,6 @@
 import ContentBox from '@/components/ui/ContentBox';
 import Item from '@/schemas/item';
+import Supplier from '@/schemas/supplier';
 import {updateItem} from '@/services/items/controllers';
 import {FontAwesome5} from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
@@ -8,11 +9,12 @@ import {useRef, useState} from 'react';
 import {ActivityIndicator, Pressable, StyleSheet, Text, View} from 'react-native';
 import Swipeable, {SwipeableMethods} from 'react-native-gesture-handler/ReanimatedSwipeable';
 
-interface ItemBoxProps {
+interface ItemCardProps {
 	item: Item;
+	supplier: Supplier | undefined;
 }
 
-const ItemBox = ({item: defaultItem}: ItemBoxProps) => {
+export default function ItemCard({item: defaultItem, supplier}: ItemCardProps) {
 	const swipeableRef = useRef<SwipeableMethods>(null);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [item, setItem] = useState<Item>(defaultItem);
@@ -83,12 +85,13 @@ const ItemBox = ({item: defaultItem}: ItemBoxProps) => {
 						<Text style={styles.title}>{item.name}</Text>
 						<Text>Quantity: {item.quantity}</Text>
 						<Text>Category: {item.category}</Text>
+						<Text>Supplier: {supplier?.name ? supplier.name : 'unkown'}</Text>
 					</Pressable>
 				</Link>
 			</ContentBox>
 		</Swipeable>
 	);
-};
+}
 
 const styles = StyleSheet.create({
 	title: {
@@ -121,5 +124,3 @@ const styles = StyleSheet.create({
 		zIndex: 1,
 	},
 });
-
-export default ItemBox;
