@@ -1,6 +1,6 @@
 import {FontAwesome5} from '@expo/vector-icons';
 import {Image} from 'expo-image';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {StyleProp, StyleSheet, View, ViewStyle} from 'react-native';
 
 interface AppImageProps {
@@ -31,6 +31,11 @@ export default function AppImage({uri, fallbackIcon, customStyle}: AppImageProps
 	} else {
 		iconSize = Math.min(styles.defaultStyle.width, styles.defaultStyle.height);
 	}
+
+	// Detect if image uri changes and try to load it again
+	useEffect(() => {
+		setImageExists(true);
+	}, [uri]);
 
 	return (
 		<View style={customStyle ? customStyle : styles.defaultStyle}>

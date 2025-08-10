@@ -90,7 +90,7 @@ export default function ItemScreen() {
 						<Text style={TextStyling.note}>Item Details</Text>
 						<InfoBox<Item>
 							displayObject={localItem}
-							hiddenFields={['id', 'supplierId', 'name', 'description']}
+							hiddenFields={['id', 'supplierId', 'name', 'description', 'imageUrl']}
 							protectedFields={['createdAt', 'updatedAt']}
 							onChange={(updatedItem) => {
 								setLocalItem(updatedItem);
