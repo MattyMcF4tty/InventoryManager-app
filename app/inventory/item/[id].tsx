@@ -2,6 +2,7 @@ import InfoBox from '@/app/inventory/item/components/InfoBox';
 import ItemCard from '@/app/inventory/item/components/ItemCard';
 import SaveButton from '@/app/inventory/item/components/SaveButton';
 import ContentBox from '@/components/ui/ContentBox';
+import TextStyling from '@/constants/styles/Text';
 import Item from '@/schemas/item';
 import Supplier from '@/schemas/supplier';
 import {getItem} from '@/services/items/controllers';
@@ -32,7 +33,7 @@ export default function ItemScreen() {
 			setStoredItem(fetchedItem);
 			setLocalItem(fetchedItem);
 
-			const fetchedSupplier = await getSupplier(fetchedItem.id);
+			const fetchedSupplier = await getSupplier(fetchedItem.supplierId);
 			setSupplier(fetchedSupplier);
 			setLoading(false);
 		}
@@ -86,7 +87,7 @@ export default function ItemScreen() {
 
 					{/* Item details box */}
 					<View>
-						<Text style={styles.small}>Item Details</Text>
+						<Text style={TextStyling.note}>Item Details</Text>
 						<InfoBox<Item>
 							displayObject={localItem}
 							hiddenFields={['id', 'supplierId', 'name', 'description']}
@@ -99,11 +100,11 @@ export default function ItemScreen() {
 
 					{/* Supplier details box */}
 					<View>
-						<Text style={styles.small}>Supplier Details</Text>
+						<Text style={TextStyling.note}>Supplier Details</Text>
 						{supplier ? (
 							<InfoBox<Supplier>
 								displayObject={supplier}
-								hiddenFields={['id']}
+								hiddenFields={['id', 'contactInfo', 'createdAt', 'updatedAt']}
 								protectedFields="all"
 								onChange={(updatedSupplier) => {
 									setSupplier(updatedSupplier);
@@ -141,14 +142,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		gap: 20,
 	},
-
-	small: {
-		fontWeight: 'bold',
-		fontSize: 10,
-		color: 'gray',
-		marginBottom: 2,
-	},
-
 	fabContainer: {
 		position: 'absolute',
 		zIndex: 10,

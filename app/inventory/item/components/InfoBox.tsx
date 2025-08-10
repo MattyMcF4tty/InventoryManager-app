@@ -19,10 +19,13 @@ export default function InfoBox<T extends object>({
 }: InfoBoxProps<T>) {
 	const [localDisplayObject, setLocalDisplayObject] = useState<T>(displayObject);
 
-	// Keep local state in sync if parent passes a new object
 	useEffect(() => {
 		setLocalDisplayObject(displayObject);
 	}, [displayObject]);
+
+	useEffect(() => {
+		onChange(localDisplayObject);
+	}, [localDisplayObject]);
 
 	const formatLabel = (key: string) =>
 		key
@@ -69,9 +72,8 @@ export default function InfoBox<T extends object>({
 										displayObjectCopy[typedKey as string] = text;
 									}
 
-									const castNext = displayObjectCopy as T;
-									onChange(castNext);
-									return castNext;
+									// Changed: removed direct onChange call here to avoid React warning
+									return displayObjectCopy as T;
 								});
 							}}
 						/>

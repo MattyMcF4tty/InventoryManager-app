@@ -1,8 +1,7 @@
+import AppImage from '@/components/ui/AppImage';
 import ContentBox from '@/components/ui/ContentBox';
+import TextStyling from '@/constants/styles/Text';
 import Item from '@/schemas/item';
-import {FontAwesome5} from '@expo/vector-icons';
-import {Image} from 'expo-image';
-import {useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
 interface ItemCardProps {
@@ -10,27 +9,17 @@ interface ItemCardProps {
 }
 
 export default function ItemCard({localItem}: ItemCardProps) {
-	const [itemImageExists, setItemImageExists] = useState<boolean>(true);
-
 	return (
 		<ContentBox style={styles.container}>
-			<View style={styles.mediaWrapper}>
-				{itemImageExists ? (
-					<Image
-						source={{uri: localItem.imageUrl}}
-						style={styles.media}
-						onError={() => setItemImageExists(false)}
-					/>
-				) : (
-					<View style={styles.media}>
-						<FontAwesome5 name="box" size={100} color="lightgray" style={{flex: 1}} />
-					</View>
-				)}
-			</View>
+			<AppImage
+				uri={localItem.imageUrl}
+				fallbackIcon="box"
+				customStyle={{height: 100, width: 100}}
+			/>
 
 			<View style={styles.infoWrapper}>
-				<Text style={styles.title}>{localItem.name}</Text>
-				<Text style={styles.description}>{localItem.description}</Text>
+				<Text style={TextStyling.title}>{localItem.name}</Text>
+				<Text style={TextStyling.subtle}>{localItem.description}</Text>
 			</View>
 		</ContentBox>
 	);
@@ -52,22 +41,5 @@ const styles = StyleSheet.create({
 		paddingLeft: 10,
 		marginLeft: 10,
 		borderColor: 'lightgray',
-	},
-	title: {
-		fontWeight: 'bold',
-		fontSize: 20,
-	},
-	description: {
-		color: 'gray',
-		fontStyle: 'italic',
-		fontSize: 14,
-	},
-	media: {
-		width: '100%',
-		height: '100%',
-	},
-	mediaWrapper: {
-		width: 100,
-		height: 100,
 	},
 });

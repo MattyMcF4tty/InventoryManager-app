@@ -1,4 +1,7 @@
+import AppImage from '@/components/ui/AppImage';
 import ContentBox from '@/components/ui/ContentBox';
+import Pill from '@/components/ui/Pill';
+import TextStyling from '@/constants/styles/Text';
 import Item from '@/schemas/item';
 import Supplier from '@/schemas/supplier';
 import {updateItem} from '@/services/items/controllers';
@@ -81,11 +84,32 @@ export default function ItemCard({item: defaultItem, supplier}: ItemCardProps) {
 			)}
 			<ContentBox>
 				<Link href={`/inventory/item/${item.id}`} asChild>
-					<Pressable>
-						<Text style={styles.title}>{item.name}</Text>
-						<Text>Quantity: {item.quantity}</Text>
-						<Text>Category: {item.category}</Text>
-						<Text>Supplier: {supplier?.name ? supplier.name : 'unkown'}</Text>
+					<Pressable style={styles.card}>
+						<AppImage uri={item.imageUrl} fallbackIcon="box" customStyle={{width: 60}} />
+						<View style={styles.cardContent}>
+							<View>
+								<Text style={TextStyling.big}>{item.name}</Text>
+								<View style={styles.supplierDetails}>
+									<FontAwesome5
+										name="warehouse"
+										size={TextStyling.note.fontSize - 2}
+										color={TextStyling.note.color}
+									/>
+									<Text style={TextStyling.note}>{supplier?.name ? supplier.name : 'unkown'}</Text>
+								</View>
+							</View>
+
+							<View style={styles.itemDetails}>
+								<Pill
+									text={String(item.quantity)}
+									color="darkturquoise"
+									icon="box"
+									textColor="white"
+								/>
+
+								<Pill text={item.category} color="cadetblue" icon="sitemap" textColor="white" />
+							</View>
+						</View>
 					</Pressable>
 				</Link>
 			</ContentBox>
@@ -94,11 +118,23 @@ export default function ItemCard({item: defaultItem, supplier}: ItemCardProps) {
 }
 
 const styles = StyleSheet.create({
-	title: {
-		fontWeight: 'bold',
-		fontSize: 18,
-		marginBottom: 8,
+	card: {
+		flex: 1,
+		flexDirection: 'row',
+		gap: 10,
 	},
+	cardContent: {
+		flexDirection: 'column',
+		gap: 12,
+		flexShrink: 1,
+	},
+	itemDetails: {
+		flexDirection: 'row',
+		gap: 6,
+		flexGrow: 1,
+		flexWrap: 'wrap',
+	},
+	supplierDetails: {flexDirection: 'row', gap: 4, alignItems: 'center'},
 	leftSwipe: {
 		borderRadius: 8,
 		backgroundColor: 'crimson',
